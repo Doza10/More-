@@ -1,0 +1,29 @@
+import cv2   
+import numpy as np   
+from datetime import datetime   
+
+# capture video feed from camera   
+cap = cv2.VideoCapture(0)   
+
+# initialize background subtraction object   
+fgbg = cv2.createBackgroundSubtractorMOG2()   
+
+# motion constants   
+MOTION_THRESHOLD = 500   
+MOTION_TIME_THRESHOLD = 5   
+
+# start the time   
+prev_time = datetime.now()   
+
+# loop to detect motion   
+while(1):   
+    ret, frame = cap.read()   
+    fgmask = fgbg.apply(frame)   
+
+    # count number of pixels which have value greater than the threshold   
+    thresh_count = np.count_nonzero(fgmask > MOTION_THRESHOLD)   
+
+    # if number of pixel is greater than threshold   
+    if thresh_count > MOTION_THRESHOLD:   
+        current_time = datetime.now()   
+        if (current_time - prev_time).seconds > MOTION_TIME_THRESHOLD
